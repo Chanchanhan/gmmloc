@@ -18,12 +18,19 @@ std::string rect_config;
 
 std::string gmm_path;
 
+std::string seq = "";
+
 bool online = false;
 
 bool verbose = false;
 
 bool viewer = false;
 
+bool use_gt_depth = false;
+
+bool use_gt_pose = false;
+
+bool load_model_default = false;
 } // namespace common
 
 namespace camera {

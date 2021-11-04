@@ -17,7 +17,7 @@ Frame::Frame(int a) {
   T_c_w_ = SE3QuatPtr(new SE3Quat);
   T_w_c_ = SE3QuatPtr(new SE3Quat);
   T_c_r_ = SE3QuatPtr(new SE3Quat);
-
+  T_c_w_gt = SE3QuatPtr(new SE3Quat);
   idx_ = next_idx_++;
 
   mbf = camera::bf;

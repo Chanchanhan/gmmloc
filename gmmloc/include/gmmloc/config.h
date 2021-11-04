@@ -20,12 +20,19 @@ extern std::string rect_config;
 
 extern std::string gmm_path;
 
+extern std::string seq;
+
 extern bool online;
 
 extern bool verbose;
 
 extern bool viewer;
 
+extern bool use_gt_depth;
+
+extern bool use_gt_pose;
+
+extern bool load_model_default;
 } // namespace common
 
 namespace gmmmap {

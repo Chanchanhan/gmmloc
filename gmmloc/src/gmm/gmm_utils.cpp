@@ -6,6 +6,24 @@
 
 namespace gmmloc {
 
+bool GMMUtility::loadGMMModel2(const std::string &file_path, GMM::Ptr &model) {
+    CHECK(!file_path.empty());
+    std::ifstream infile(file_path);
+    GaussianComponents comps;
+    std::string line;
+    while (getline(infile, line)){
+        std::stringstream ss(line);
+        Vector3d mean;
+        Matrix3d covariance;
+        ss >> mean(0) >> mean(1) >> mean(2) >>
+           covariance(0, 0) >> covariance(0, 1) >> covariance(0, 2) >>
+           covariance(1, 0) >> covariance(1, 1) >> covariance(1, 2) >>
+           covariance(2, 0) >> covariance(2, 1) >> covariance(2, 2);
+        comps.push_back(new GaussianComponent(mean, covariance));
+    }
+    model = GMM::Ptr(new GMM(comps));
+    return true;
+}
 bool GMMUtility::loadGMMModel(const std::string &file_path, GMM::Ptr &model) {
   //   CHECK_NOTNULL(model);
 

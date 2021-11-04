@@ -21,9 +21,13 @@ void initParameters(ros::NodeHandle &nh) {
   GPARAM("vocabulary_path", common::voc_path);
   GPARAM("data_path", common::data_path);
   GPARAM("output_path", common::output_path);
+  GPARAM("seq", common::seq);
 
   GPARAM("rect_config", common::rect_config);
 
+  GPARAM("use_gt_depth", common::use_gt_depth);
+  GPARAM("use_gt_pose", common::use_gt_pose);
+  GPARAM("load_model_default", common::load_model_default);
   GPARAM("gmm_path", common::gmm_path);
   GPARAM("online", common::online);
   GPARAM("verbose", common::verbose);

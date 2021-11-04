@@ -1,5 +1,5 @@
 #include "gmmloc/utils/dataloader.h"
-
+#include "gmmloc/config.h"
 #include <fstream>
 #include <iostream>
 
@@ -87,7 +87,9 @@ DataFrame::Ptr DataloaderEuRoC::getFrameByIndex(size_t idx) {
       ptr->depth = cv::Mat();
     }
   }
-
+  if (common::use_gt_depth) {
+      ptr->depth_gt = cv::imread(depth_gt_file_[idx], CV_LOAD_IMAGE_ANYCOLOR | CV_LOAD_IMAGE_ANYDEPTH);
+  }
   ptr->idx = idx;
   return ptr;
 }
@@ -112,6 +114,21 @@ void DataloaderEuRoC::loadImages(const string &base_path) {
       mono_file_.push_back(strPrefixLeft + t + ".png");
       depth_file_.push_back(strPrefixRight + t + ".png");
     }
+  }
+  if (common::use_gt_depth) {
+      string strDepthPathTimeFile = base_path + "/depth0/data.csv";
+      string strPrefixDepthGT = base_path + "/depth0/data/";
+      fTimes.close();
+      fTimes.open(strDepthPathTimeFile.c_str());
+      getline(fTimes, s);
+      while (!fTimes.eof()) {
+          getline(fTimes, s);
+          if (!s.empty()) {
+              int index = s.find_first_of(",");
+              string t = s.substr(0, index);
+              depth_gt_file_.push_back(strPrefixDepthGT + t + ".png");
+          }
+      }
   }
 }
 

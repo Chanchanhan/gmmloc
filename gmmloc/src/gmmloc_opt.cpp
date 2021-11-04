@@ -121,7 +121,11 @@ void GMMLoc::associateMapElements(KeyFrame *kf) {
 
   {
     timing::Timer t("loc/render_view");
-    gmm_model_->renderView(rot_c_w, t_c_w);
+    if (common::use_gt_pose) {
+        gmm_model_->renderView(kf->T_c_w_gt->rotation(), kf->T_c_w_gt->translation());
+    } else {
+        gmm_model_->renderView(rot_c_w, t_c_w);
+    }
     t.Stop();
   }
 

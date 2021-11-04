@@ -30,6 +30,9 @@ void Tracking::initialize(Frame *init_frame) {
 
   ref_keyframe_ = init_frame->ref_keyframe_;
   local_keyframes_.push_back(ref_keyframe_);
+  ofstream fs (common::output_path + "/"  + common::seq + "front.tum", std::ios::in);
+  fs.clear();
+  fs.close();
 }
 
 TrackStat Tracking::track(Frame *frame) {
@@ -70,6 +73,17 @@ TrackStat Tracking::track(Frame *frame) {
       return stat_;
     }
   }
+    {
+        const auto &timestamp = last_frame_->timestamp_;
+        const auto Twc = last_frame_->getTwc();
+        const auto &rot = Twc.rotation();
+        const auto &trans = Twc.translation();
+        ofstream fs (common::output_path + "/"  + common::seq + "front.tum", std::ios::app);
+        fs.precision(16);
+        fs << setprecision(16) << timestamp << " " << setprecision(9) << trans.x()
+           << ' ' << trans.y() << ' ' << trans.z() << ' ' << rot.x() << ' '
+           << rot.y() << ' ' << rot.z() << ' ' << rot.w() << endl;
+    }
 
   curr_frame_->ref_keyframe_ = ref_keyframe_;
   {
@@ -334,8 +348,10 @@ int Tracking::trackKeyFrame() {
 int Tracking::trackWithMotionModel() {
   LOG(INFO) << "track with motion model";
   ORBmatcher matcher(0.9, true);
-
-  const int th = 7;
+  int th = 7;
+  if (!common::load_model_default) {
+      th = 35;
+  }
   int nmatches =
       matcher.searchByProjection(*curr_frame_, *last_frame_, th, false);
 

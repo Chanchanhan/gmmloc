@@ -73,6 +73,7 @@ public:
 
   bool unproject3(size_t idx, Vector3d *pt3d);
 
+  SE3QuatPtr T_c_w_gt;
 public:
   static long unsigned int next_idx_; ///< Next Frame id.
   long unsigned int idx_;             ///< Current Frame id.

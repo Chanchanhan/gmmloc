@@ -160,7 +160,7 @@ void Map::setTrajectory(const eigen_aligned_std_vector<Quaterniond> &rot,
 }
 
 void Map::summarize() {
-  std::string file_name = common::output_path + "/traj_est.txt";
+  std::string file_name = common::output_path + "/" + common::seq + ".tum";
   ofstream fs(file_name);
 
   eigen_aligned_std_vector<SE3Quat> traj_;

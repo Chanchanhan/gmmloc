@@ -43,6 +43,7 @@ struct DataFrame {
   using ConstPtr = std::shared_ptr<const DataFrame>;
 
   cv::Mat mono, depth;
+  cv::Mat depth_gt;
   double timestamp;
 
   Vector3d t_w_c;
@@ -76,7 +77,7 @@ protected:
 
   std::string base_path_;
 
-  std::vector<std::string> mono_file_, depth_file_;
+  std::vector<std::string> mono_file_, depth_file_, depth_gt_file_;
   std::vector<double> time_stamp_;
 
   eigen_aligned_std_vector<Quaterniond> rot_;

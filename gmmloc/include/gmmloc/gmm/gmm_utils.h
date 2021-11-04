@@ -11,6 +11,7 @@ public:
                              const GaussianComponent &g1);
 
   static bool loadGMMModel(const std::string &file_path, GMM::Ptr &model);
+  static bool loadGMMModel2(const std::string &file_path, GMM::Ptr &model);
 
   static bool saveGMMModel(const std::string &file_path, GMM::Ptr &model,
                            bool clear_file = true);

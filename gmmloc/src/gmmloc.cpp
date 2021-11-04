@@ -40,7 +40,11 @@ GMMLoc::GMMLoc(ros::NodeHandle &nh) : nh_(nh), pause_(true) {
                               camera::width, camera::height);
 
   timing::Timer timer_map("map");
-  GMMUtility::loadGMMModel(common::gmm_path, gmm_model_);
+  if (!common::load_model_default) {
+    GMMUtility::loadGMMModel2(common::gmm_path, gmm_model_);
+  } else {
+    GMMUtility::loadGMMModel(common::gmm_path, gmm_model_);
+  }
   timer_map.Stop();
 
   gmm_model_->setCamera(camera_);
@@ -79,7 +83,9 @@ GMMLoc::GMMLoc(ros::NodeHandle &nh) : nh_(nh), pause_(true) {
         unique_ptr<thread>(new thread(&ViewerGMMLoc::spin, viewer_));
   }
 
-  recter_ = new Rectify(common::rect_config);
+    if (camera::do_rectify) {
+        recter_ = new Rectify(common::rect_config);
+    }
 
   extractor_left_ = new ORBextractor(frame::num_features);
   extractor_right_ = new ORBextractor(frame::num_features);
@@ -259,6 +265,17 @@ Frame *GMMLoc::processFrame(DataFrame::Ptr data) {
     frame->computeStereoMatches(kps_right, desc_right,
                                 extractor_left_->mvImagePyramid,
                                 extractor_right_->mvImagePyramid);
+    if (common::use_gt_depth) {
+      for (auto &feature : frame->features_) {
+        if (feature.depth > 0) {
+          double gt_depth = 1.0f * data->depth_gt.at<ushort>(int(feature.uv[1]), int(feature.uv[0])) / 1000.f;
+          double disparity = frame->mbf / gt_depth;
+          double gt_u_right = feature.uv[0] - disparity;
+          feature.depth = gt_depth;
+          feature.u_right = gt_u_right;
+        }
+      }
+    }
 
     frame->mappoints_ = vector<MapPoint *>(frame->num_feats_, nullptr);
     frame->is_outlier_ = vector<bool>(frame->num_feats_, false);

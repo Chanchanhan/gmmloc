@@ -110,6 +110,9 @@ KeyFrame::KeyFrame(Frame &F)
 
   T_c_w_ = SE3QuatPtr(new SE3Quat);
   T_w_c_ = SE3QuatPtr(new SE3Quat);
+  T_c_w_gt = SE3QuatPtr(new SE3Quat);
+  T_c_w_gt->setRotation(F.T_c_w_gt->rotation());
+  T_c_w_gt->setTranslation(F.T_c_w_gt->translation());
   setTcw(F.getTcw());
 }
 

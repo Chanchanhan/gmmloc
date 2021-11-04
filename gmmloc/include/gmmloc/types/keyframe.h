@@ -103,6 +103,7 @@ public:
   void setTcw(const SE3Quat &T_c_w);
 
   void setTwc(const SE3Quat &T_w_c);
+  SE3QuatPtr T_c_w_gt;
 
 protected:
   SE3QuatPtr T_c_w_, T_w_c_;
