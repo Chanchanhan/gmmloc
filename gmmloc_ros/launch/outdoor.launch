@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<launch>
+	<arg name="gdb" default="false" />
+	<arg name="verbose" default="false" />
+	<arg name="gmm" default="true" />
+	<arg name="seq" default="V1_01_easy" />
+	<arg name="online" default="true" />
+	<arg name="viewer" default="true" />
+	<arg name="use_gt_depth" default="true" />
+	<arg name="use_gt_pose" default="true" />
+	<arg name="load_model_default" default="false" />
+
+	<arg if="$(arg gdb)" name="prefix" value="gdb -ex run --args" />
+	<arg unless="$(arg gdb)" name="prefix" value="" />
+	<arg if="$(arg verbose)" name="args" value="-alsologtostderr -colorlogtostderr" />
+	<arg unless="$(arg verbose)" name="args" value="-alsologtostderr -colorlogtostderr --minloglevel=1" />
+
+	<include if="$(arg viewer)" file="$(find gmmloc_ros)/launch/viz.launch"/>
+
+	<!-- <node pkg="tf2_ros" type="static_transform_publisher" name="static_br2" args="0 0 0 0.5 0.5 0.5 0.5 camera view" /> -->
+
+    <node name="gmmloc" pkg="gmmloc" type="gmmloc_node" args="$(arg args)" launch-prefix="$(arg prefix)" output="screen" clear_params="true">
+
+		<param name="dataset" value="euroc" />
+
+        <param name="vocabulary_path" value="$(find gmmloc_ros)/voc/ORBvoc.bin" />
+        <param name="output_path" value="$(find gmmloc_ros)/expr/" />
+		<param name="data_path" value="/root/Data/AriSim/data/to_ros_bag/euroc_data/$(arg seq)/mav0/" />
+		<param name="gt_path" value="/root//Data/AriSim/data/to_ros_bag/euroc_data/$(arg seq)/mav0/state_groundtruth_estimate0/data_cam_w.tum" />
+
+		<param name="t_noise" value="0" />
+		<param name="r_noise" value="0" />
+		<param name="interval" value="0" />
+		<param name="delay" value="0" />
+
+		<param name="online" value="$(arg online)" />
+		<param name="viewer" value="$(arg viewer)" />
+		<param name="seq" value="$(arg seq)" />
+	    <param name="use_gt_depth" value="$(arg use_gt_depth)" />
+		<param name="use_gt_pose" value="$(arg use_gt_pose)" />
+		<param name="load_model_default" value="$(arg load_model_default)" />
+		<param name="verbose" value="$(arg verbose)" />
+
+		<param name="gmm_path" value="$(find gmmloc_ros)/data/map/outdoor.gmm" />
+
+        <param name="rect_config" value="$(find gmmloc_ros)/cfg/airsim_rect.yaml" />
+		<rosparam command="load" file="$(find gmmloc_ros)/cfg/airsim.yaml" />
+
+    </node>
+</launch>
